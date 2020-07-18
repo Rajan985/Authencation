@@ -18,7 +18,10 @@ const userSchema = new mongoose.Schema({
   password: String
 });
 
-
+//LEVEL 2 AUTHENCATION//
+const secret = "Thisourlittlesecret";
+userSchema.plugin(encrypt, {secret: secret, encryptedFields: ["password"]});
+// ENDS HERE//
 const User = mongoose.model("User", userSchema);
 
 app.get("/", function(req, res){
@@ -39,7 +42,7 @@ app.post("/register", function(req, res){
     password: req.body.password
   });
 
-  newUser.save(function(err){
+  newUser.save(function(err){      // while saving mongoose encrypt will encrypt the data
     if(err){
       console.log(err);
     } else{
@@ -57,7 +60,7 @@ app.post("/login", function(req, res){
       console.log(err);
     } else{
       if(foundUser){
-        if(foundUser.password === password){
+        if(foundUser.password === password){   //while reading the data mongoose-encrypt will decrypt the data
           res.render("secrets")
         }
       }
